@@ -249,8 +249,9 @@ class ReverseModelAdmin(ModelAdmin):
                     if not isinstance(inline, ReverseInlineModelAdmin):
                         continue
                     obj_list = formset.save()
-                    obj = obj_list[0] if obj_list else None
-                    setattr(new_object, inline.parent_fk_name, obj)
+                    if not getattr(new_object, inline.parent_fk_name):
+                        obj = obj_list[0] if obj_list else None
+                        setattr(new_object, inline.parent_fk_name, obj)
                 self.save_model(request, new_object, form, change=not add)
                 form.save_m2m()
                 for formset in formsets:
